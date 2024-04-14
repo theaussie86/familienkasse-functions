@@ -1,0 +1,23 @@
+{
+  "name": "cloud-functions",
+  "version": "1.0.0",
+  "description": "",
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "npx @google-cloud/functions-framework --source=lib"
+  },
+  "author": "Christoph Weissteiner",
+  "license": "ISC",
+  "dependencies": {
+    "@google-cloud/functions-framework": "^3.3.0",
+    "mongodb": "^6.5.0"
+  },
+  "devDependencies": {
+    "express": "^4.19.2",
+    "dotenv": "^16.4.5",
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.12.7",
+    "typescript": "^5.4.5"
+  }
+}
