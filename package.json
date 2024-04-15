@@ -1,7 +1,7 @@
 {
   "scripts": {
     "dev": "functions-framework --target=insertData",
-    "deploy": "gcloud functions deploy insertData --entry-point=insertData --gen2 --runtime=nodejs20 --trigger-http --allow-unauthenticated --region=europe-west3 --env-vars-file=.env.yaml"
+    "deploy": "gcloud functions deploy insertData --entry-point=insertData --gen2 --runtime=nodejs20 --trigger-http  --region=europe-west3 --env-vars-file=.env.yaml"
   },
   "dependencies": {
     "@google-cloud/functions-framework": "^3.3.0",
