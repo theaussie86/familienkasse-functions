@@ -16,8 +16,8 @@
 node_modules
 #!include:.gitignore
 
-.env
-pnpm-lock.yaml
-tsconfig
-src/
+.env.yaml
+# pnpm-lock.yaml
+# tsconfig
+# src/
 cloudfunction.yaml

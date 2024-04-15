@@ -1,12 +1,8 @@
-import { MongoClient } from "mongodb";
-import { Request, Response } from "express";
-import * as dotenv from "dotenv";
-
-dotenv.config();
+const { MongoClient } = require("mongodb");
 
 const client = new MongoClient(process.env.MONGO_URL ?? "");
 
-export const insertData = async (req: Request, res: Response) => {
+exports.insertData = async (req, res) => {
   if (req.method !== "POST") {
     res.status(405).send("Method Not Allowed");
     return;
