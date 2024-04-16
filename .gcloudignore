@@ -17,6 +17,7 @@ node_modules
 #!include:.gitignore
 
 .env.yaml
+.env
 # pnpm-lock.yaml
 # tsconfig
 # src/
