@@ -6,15 +6,21 @@ const client = new MongoClient(
   `mongodb+srv://${process.env.MONGO_DB_USER}:${process.env.MONGO_DB_PASSWORD}@familienkasse.i5hq0pp.mongodb.net/?retryWrites=true&w=majority&appName=Familienkasse`
 );
 
+type Transaction = {
+  created?: Date;
+  isPaid?: boolean;
+  amount: number;
+  account: string;
+  description: string;
+};
+
 cloudEvent(
   "insertData",
   async (
     cloudEvent: CloudEvent<{
-      created: string;
-      isPaid: boolean;
-      amount: number;
-      account: string;
-      description: string;
+      message: {
+        data: string;
+      };
     }>
   ) => {
     if (!cloudEvent.data) {
@@ -22,21 +28,24 @@ cloudEvent(
     }
 
     console.log("Data received:", cloudEvent.data);
+    const data: Transaction = JSON.parse(
+      Buffer.from(cloudEvent.data.message.data, "base64").toString("utf-8")
+    );
 
     if (
-      !cloudEvent.data?.account ||
+      !data.account ||
       !["spenden", "sparen", "investieren"].includes(
-        cloudEvent.data?.account.trim().toLowerCase()
+        data.account.trim().toLowerCase()
       )
     ) {
       throw "account field is missing  or invalid";
     }
 
-    if (!cloudEvent.data?.amount) {
+    if (!data.amount) {
       throw "amount field is missing";
     }
 
-    if (!cloudEvent.data?.description) {
+    if (!data.description) {
       throw "description field is missing";
     }
 
@@ -45,11 +54,9 @@ cloudEvent(
       const database = client.db(process.env.DB_NAME);
       const collection = database.collection("transactions");
       const result = await collection.insertOne({
-        ...cloudEvent.data,
-        created: cloudEvent.data?.created
-          ? cloudEvent.data?.created
-          : new Date(),
-        isPaid: cloudEvent.data?.isPaid === true ? true : false,
+        ...data,
+        created: data.created ? data.created : new Date(),
+        isPaid: data.isPaid === true ? true : false,
       });
       console.log(`Data inserted with ID: ${result.insertedId}`);
     } catch (e) {
