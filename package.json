@@ -1,10 +1,31 @@
 {
+  "name": "familienkasse-insert-mongodb-function",
+  "version": "1.0.0",
+  "description": "Function to insert data via cloud scheduler and Pub/Sub",
+  "main": "src/index.js",
+  "files": [
+    "build/src"
+  ],
+  "license": "MIT",
+  "author": "Christoph Weissteiner",
   "scripts": {
-    "dev": "functions-framework --target=insertData",
-    "deploy": "gcloud functions deploy insertData --entry-point=insertData --gen2 --runtime=nodejs20 --trigger-http  --region=europe-west3 --env-vars-file=.env.yaml"
+    "start": "functions-framework --source=build/src/ --target=insertData --signature-type=cloudevent",
+    "compile": "tsc",
+    "predeploy": "npm run compile",
+    "deploy": "gcloud functions deploy insert-data --region=europe-west3 --runtime nodejs20 --entry-point=insertData --gen2 --source=./build --trigger-topic=insertRecurringTransaction --set-env-vars= --service-account=\"cloud-functions-service-accoun@weissteiner-familienkasse.iam.gserviceaccount.com\" --verbosity=debug",
+    "watch": "concurrently \"npm run compile -- --watch\" \"nodemon --watch ./build/ --exec npm run debug\"",
+    "debug": "export MONGO_DB_USER=$(gcloud secrets versions access 1 --secret='wfk-mongo-user') && export MONGO_DB_PASSWORD=$(gcloud secrets versions access 1 --secret='wfk-mongo-password') && export DB_NAME=familienkasse_test && functions-framework --source=build/src/ --target=insertData"
   },
   "dependencies": {
     "@google-cloud/functions-framework": "^3.3.0",
+    "@google/events": "^5.4.0",
     "mongodb": "^6.5.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.7",
+    "concurrently": "^8.2.2",
+    "gts": "^5.3.0",
+    "nodemon": "^3.1.0",
+    "typescript": "^5.4.5"
   }
 }
